@@ -615,7 +615,7 @@ async function entrarComoUsuario(){
   document.getElementById("auth").classList.remove("active");
   document.getElementById("nav-tabs").style.display="flex";
   document.getElementById("hdr-user").style.display="inline";
-  document.getElementById("hdr-user").textContent="&#128100; "+usuarioAtual.nome.split(" ")[0];
+  document.getElementById("hdr-user").textContent="👤 "+usuarioAtual.nome.split(" ")[0];
   document.getElementById("hdr-logout").style.display="inline";
   showTab("palpites",document.querySelector(".nav-tab"));
   await carregarPalpitesUsuario();
@@ -693,7 +693,7 @@ window.salvarPalpites=async function(){
   await setDoc(doc(db,"palpites",id),dados);
   document.getElementById("success-screen").style.display="block";
   document.getElementById("success-nome").textContent=usuarioAtual.nome.split(" ")[0];
-  toast("&#9989; Palpites salvos com sucesso!");
+  toast("✅ Palpites salvos com sucesso!");
 };
 
 // ── ranking ──
@@ -821,7 +821,7 @@ window.buscarResultadosAPI=async function(verbose=true){
   const status=document.getElementById("api-status");
   if(API_FOOTBALL_KEY==="48d69fdde5e81f5122a8c79393d534f0"){
     if(verbose)toast("&#9888; Configure sua chave da API-Football primeiro.");
-    if(status)status.textContent="&#9888; Chave da API não configurada. Cadastre-se em api-football.com (plano gratuito).";
+    if(status)status.textContent="⚠️ Chave da API não configurada. Cadastre-se em api-football.com (plano gratuito).";
     return;
   }
   if(status)status.textContent="&#128260; Buscando resultados...";
