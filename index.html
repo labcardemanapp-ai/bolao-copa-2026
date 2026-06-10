@@ -459,91 +459,120 @@ const API_LEAGUE = 1;
 const API_SEASON = 2026;
 
 const JOGOS = [
-  // GRUPO A
-  {id:1,g:"A",d:"11/06",a:"M&#233;xico",b:"&#193;frica do Sul"},
-  {id:2,g:"A",d:"11/06",a:"Rep. da Coreia",b:"Rep. Tcheca"},
-  {id:3,g:"A",d:"18/06",a:"Rep. Tcheca",b:"&#193;frica do Sul"},
-  {id:4,g:"A",d:"18/06",a:"M&#233;xico",b:"Rep. da Coreia"},
-  {id:5,g:"A",d:"24/06",a:"Rep. Tcheca",b:"M&#233;xico"},
-  {id:6,g:"A",d:"24/06",a:"&#193;frica do Sul",b:"Rep. da Coreia"},
+  // GRUPO A — horario Brasilia
+  {id:1,g:"A",d:"11/06",a:"M&#233;xico",b:"&#193;frica do Sul",           kick:"2026-06-11T16:00"},
+  {id:2,g:"A",d:"11/06",a:"Rep. da Coreia",b:"Rep. Tcheca",               kick:"2026-06-11T23:00"},
+  {id:3,g:"A",d:"18/06",a:"Rep. Tcheca",b:"&#193;frica do Sul",           kick:"2026-06-18T13:00"},
+  {id:4,g:"A",d:"18/06",a:"M&#233;xico",b:"Rep. da Coreia",               kick:"2026-06-18T22:00"},
+  {id:5,g:"A",d:"24/06",a:"Rep. Tcheca",b:"M&#233;xico",                  kick:"2026-06-24T22:00"},
+  {id:6,g:"A",d:"24/06",a:"&#193;frica do Sul",b:"Rep. da Coreia",        kick:"2026-06-24T22:00"},
   // GRUPO B
-  {id:7,g:"B",d:"12/06",a:"Canad&#225;",b:"B&#243;snia e Herz."},
-  {id:8,g:"B",d:"13/06",a:"Catar",b:"Su&#237;&#231;a"},
-  {id:9,g:"B",d:"18/06",a:"Su&#237;&#231;a",b:"B&#243;snia e Herz."},
-  {id:10,g:"B",d:"18/06",a:"Canad&#225;",b:"Catar"},
-  {id:11,g:"B",d:"24/06",a:"Su&#237;&#231;a",b:"Canad&#225;"},
-  {id:12,g:"B",d:"24/06",a:"B&#243;snia e Herz.",b:"Catar"},
+  {id:7,g:"B",d:"12/06",a:"Canad&#225;",b:"B&#243;snia e Herz.",          kick:"2026-06-12T16:00"},
+  {id:8,g:"B",d:"13/06",a:"Catar",b:"Su&#237;&#231;a",                    kick:"2026-06-13T16:00"},
+  {id:9,g:"B",d:"18/06",a:"Su&#237;&#231;a",b:"B&#243;snia e Herz.",      kick:"2026-06-18T16:00"},
+  {id:10,g:"B",d:"18/06",a:"Canad&#225;",b:"Catar",                       kick:"2026-06-18T19:00"},
+  {id:11,g:"B",d:"24/06",a:"Su&#237;&#231;a",b:"Canad&#225;",             kick:"2026-06-24T16:00"},
+  {id:12,g:"B",d:"24/06",a:"B&#243;snia e Herz.",b:"Catar",               kick:"2026-06-24T16:00"},
   // GRUPO C
-  {id:13,g:"C",d:"13/06",a:"Brasil",b:"Marrocos"},
-  {id:14,g:"C",d:"13/06",a:"Haiti",b:"Esc&#243;cia"},
-  {id:15,g:"C",d:"19/06",a:"Esc&#243;cia",b:"Marrocos"},
-  {id:16,g:"C",d:"19/06",a:"Brasil",b:"Haiti"},
-  {id:17,g:"C",d:"24/06",a:"Esc&#243;cia",b:"Brasil"},
-  {id:18,g:"C",d:"24/06",a:"Marrocos",b:"Haiti"},
+  {id:13,g:"C",d:"13/06",a:"Brasil",b:"Marrocos",                         kick:"2026-06-13T19:00"},
+  {id:14,g:"C",d:"13/06",a:"Haiti",b:"Esc&#243;cia",                      kick:"2026-06-13T22:00"},
+  {id:15,g:"C",d:"19/06",a:"Esc&#243;cia",b:"Marrocos",                   kick:"2026-06-19T19:00"},
+  {id:16,g:"C",d:"19/06",a:"Brasil",b:"Haiti",                            kick:"2026-06-19T21:30"},
+  {id:17,g:"C",d:"24/06",a:"Esc&#243;cia",b:"Brasil",                     kick:"2026-06-24T19:00"},
+  {id:18,g:"C",d:"24/06",a:"Marrocos",b:"Haiti",                          kick:"2026-06-24T19:00"},
   // GRUPO D
-  {id:19,g:"D",d:"12/06",a:"Estados Unidos",b:"Paraguai"},
-  {id:20,g:"D",d:"13/06",a:"Austr&#225;lia",b:"Turquia"},
-  {id:21,g:"D",d:"19/06",a:"Turquia",b:"Paraguai"},
-  {id:22,g:"D",d:"19/06",a:"Estados Unidos",b:"Austr&#225;lia"},
-  {id:23,g:"D",d:"25/06",a:"Turquia",b:"Estados Unidos"},
-  {id:24,g:"D",d:"25/06",a:"Paraguai",b:"Austr&#225;lia"},
+  {id:19,g:"D",d:"12/06",a:"Estados Unidos",b:"Paraguai",                 kick:"2026-06-12T22:00"},
+  {id:20,g:"D",d:"13/06",a:"Austr&#225;lia",b:"Turquia",                  kick:"2026-06-14T01:00"},
+  {id:21,g:"D",d:"19/06",a:"Turquia",b:"Paraguai",                        kick:"2026-06-20T00:00"},
+  {id:22,g:"D",d:"19/06",a:"Estados Unidos",b:"Austr&#225;lia",           kick:"2026-06-19T16:00"},
+  {id:23,g:"D",d:"25/06",a:"Turquia",b:"Estados Unidos",                  kick:"2026-06-25T23:00"},
+  {id:24,g:"D",d:"25/06",a:"Paraguai",b:"Austr&#225;lia",                 kick:"2026-06-25T23:00"},
   // GRUPO E
-  {id:25,g:"E",d:"14/06",a:"Alemanha",b:"Cura&#231;ao"},
-  {id:26,g:"E",d:"14/06",a:"Costa do Marfim",b:"Equador"},
-  {id:27,g:"E",d:"20/06",a:"Alemanha",b:"Costa do Marfim"},
-  {id:28,g:"E",d:"20/06",a:"Equador",b:"Cura&#231;ao"},
-  {id:29,g:"E",d:"25/06",a:"Equador",b:"Alemanha"},
-  {id:30,g:"E",d:"25/06",a:"Cura&#231;ao",b:"Costa do Marfim"},
+  {id:25,g:"E",d:"14/06",a:"Alemanha",b:"Cura&#231;ao",                   kick:"2026-06-14T14:00"},
+  {id:26,g:"E",d:"14/06",a:"Costa do Marfim",b:"Equador",                 kick:"2026-06-14T20:00"},
+  {id:27,g:"E",d:"20/06",a:"Alemanha",b:"Costa do Marfim",                kick:"2026-06-20T17:00"},
+  {id:28,g:"E",d:"20/06",a:"Equador",b:"Cura&#231;ao",                    kick:"2026-06-20T21:00"},
+  {id:29,g:"E",d:"25/06",a:"Equador",b:"Alemanha",                        kick:"2026-06-25T17:00"},
+  {id:30,g:"E",d:"25/06",a:"Cura&#231;ao",b:"Costa do Marfim",            kick:"2026-06-25T17:00"},
   // GRUPO F
-  {id:31,g:"F",d:"14/06",a:"Holanda",b:"Jap&#227;o"},
-  {id:32,g:"F",d:"14/06",a:"Su&#233;cia",b:"Tun&#237;sia"},
-  {id:33,g:"F",d:"20/06",a:"Holanda",b:"Su&#233;cia"},
-  {id:34,g:"F",d:"20/06",a:"Tun&#237;sia",b:"Jap&#227;o"},
-  {id:35,g:"F",d:"25/06",a:"Jap&#227;o",b:"Su&#233;cia"},
-  {id:36,g:"F",d:"25/06",a:"Tun&#237;sia",b:"Holanda"},
+  {id:31,g:"F",d:"14/06",a:"Holanda",b:"Jap&#227;o",                      kick:"2026-06-14T17:00"},
+  {id:32,g:"F",d:"14/06",a:"Su&#233;cia",b:"Tun&#237;sia",                kick:"2026-06-14T23:00"},
+  {id:33,g:"F",d:"20/06",a:"Holanda",b:"Su&#233;cia",                     kick:"2026-06-20T14:00"},
+  {id:34,g:"F",d:"20/06",a:"Tun&#237;sia",b:"Jap&#227;o",                 kick:"2026-06-20T23:00"},
+  {id:35,g:"F",d:"25/06",a:"Jap&#227;o",b:"Su&#233;cia",                  kick:"2026-06-25T20:00"},
+  {id:36,g:"F",d:"25/06",a:"Tun&#237;sia",b:"Holanda",                    kick:"2026-06-25T20:00"},
   // GRUPO G
-  {id:37,g:"G",d:"15/06",a:"B&#233;lgica",b:"Egito"},
-  {id:38,g:"G",d:"15/06",a:"Ir&#227;",b:"Nova Zel&#226;ndia"},
-  {id:39,g:"G",d:"21/06",a:"B&#233;lgica",b:"Ir&#227;"},
-  {id:40,g:"G",d:"21/06",a:"Nova Zel&#226;ndia",b:"Egito"},
-  {id:41,g:"G",d:"26/06",a:"Egito",b:"Ir&#227;"},
-  {id:42,g:"G",d:"26/06",a:"Nova Zel&#226;ndia",b:"B&#233;lgica"},
+  {id:37,g:"G",d:"15/06",a:"B&#233;lgica",b:"Egito",                      kick:"2026-06-15T16:00"},
+  {id:38,g:"G",d:"15/06",a:"Ir&#227;",b:"Nova Zel&#226;ndia",             kick:"2026-06-15T22:00"},
+  {id:39,g:"G",d:"21/06",a:"B&#233;lgica",b:"Ir&#227;",                   kick:"2026-06-21T16:00"},
+  {id:40,g:"G",d:"21/06",a:"Nova Zel&#226;ndia",b:"Egito",                kick:"2026-06-21T22:00"},
+  {id:41,g:"G",d:"26/06",a:"Egito",b:"Ir&#227;",                          kick:"2026-06-27T00:00"},
+  {id:42,g:"G",d:"26/06",a:"Nova Zel&#226;ndia",b:"B&#233;lgica",         kick:"2026-06-27T00:00"},
   // GRUPO H
-  {id:43,g:"H",d:"15/06",a:"Espanha",b:"Cabo Verde"},
-  {id:44,g:"H",d:"15/06",a:"Ar&#225;bia Saudita",b:"Uruguai"},
-  {id:45,g:"H",d:"21/06",a:"Espanha",b:"Ar&#225;bia Saudita"},
-  {id:46,g:"H",d:"21/06",a:"Uruguai",b:"Cabo Verde"},
-  {id:47,g:"H",d:"26/06",a:"Cabo Verde",b:"Ar&#225;bia Saudita"},
-  {id:48,g:"H",d:"26/06",a:"Uruguai",b:"Espanha"},
+  {id:43,g:"H",d:"15/06",a:"Espanha",b:"Cabo Verde",                      kick:"2026-06-15T13:00"},
+  {id:44,g:"H",d:"15/06",a:"Ar&#225;bia Saudita",b:"Uruguai",             kick:"2026-06-15T19:00"},
+  {id:45,g:"H",d:"21/06",a:"Espanha",b:"Ar&#225;bia Saudita",             kick:"2026-06-21T13:00"},
+  {id:46,g:"H",d:"21/06",a:"Uruguai",b:"Cabo Verde",                      kick:"2026-06-21T19:00"},
+  {id:47,g:"H",d:"26/06",a:"Cabo Verde",b:"Ar&#225;bia Saudita",          kick:"2026-06-26T21:00"},
+  {id:48,g:"H",d:"26/06",a:"Uruguai",b:"Espanha",                         kick:"2026-06-26T21:00"},
   // GRUPO I
-  {id:49,g:"I",d:"16/06",a:"Fran&#231;a",b:"Senegal"},
-  {id:50,g:"I",d:"16/06",a:"Iraque",b:"Noruega"},
-  {id:51,g:"I",d:"22/06",a:"Fran&#231;a",b:"Iraque"},
-  {id:52,g:"I",d:"22/06",a:"Noruega",b:"Senegal"},
-  {id:53,g:"I",d:"26/06",a:"Noruega",b:"Fran&#231;a"},
-  {id:54,g:"I",d:"26/06",a:"Senegal",b:"Iraque"},
+  {id:49,g:"I",d:"16/06",a:"Fran&#231;a",b:"Senegal",                     kick:"2026-06-16T16:00"},
+  {id:50,g:"I",d:"16/06",a:"Iraque",b:"Noruega",                          kick:"2026-06-16T19:00"},
+  {id:51,g:"I",d:"22/06",a:"Fran&#231;a",b:"Iraque",                      kick:"2026-06-22T18:00"},
+  {id:52,g:"I",d:"22/06",a:"Noruega",b:"Senegal",                         kick:"2026-06-22T21:00"},
+  {id:53,g:"I",d:"26/06",a:"Noruega",b:"Fran&#231;a",                     kick:"2026-06-26T16:00"},
+  {id:54,g:"I",d:"26/06",a:"Senegal",b:"Iraque",                          kick:"2026-06-26T16:00"},
   // GRUPO J
-  {id:55,g:"J",d:"16/06",a:"Argentina",b:"Arg&#233;lia"},
-  {id:56,g:"J",d:"16/06",a:"&#193;ustria",b:"Jord&#226;nia"},
-  {id:57,g:"J",d:"22/06",a:"Argentina",b:"&#193;ustria"},
-  {id:58,g:"J",d:"22/06",a:"Jord&#226;nia",b:"Arg&#233;lia"},
-  {id:59,g:"J",d:"27/06",a:"Arg&#233;lia",b:"&#193;ustria"},
-  {id:60,g:"J",d:"27/06",a:"Jord&#226;nia",b:"Argentina"},
+  {id:55,g:"J",d:"16/06",a:"Argentina",b:"Arg&#233;lia",                  kick:"2026-06-16T22:00"},
+  {id:56,g:"J",d:"16/06",a:"&#193;ustria",b:"Jord&#226;nia",              kick:"2026-06-17T01:00"},
+  {id:57,g:"J",d:"22/06",a:"Argentina",b:"&#193;ustria",                  kick:"2026-06-22T14:00"},
+  {id:58,g:"J",d:"22/06",a:"Jord&#226;nia",b:"Arg&#233;lia",              kick:"2026-06-23T00:00"},
+  {id:59,g:"J",d:"27/06",a:"Arg&#233;lia",b:"&#193;ustria",               kick:"2026-06-27T23:00"},
+  {id:60,g:"J",d:"27/06",a:"Jord&#226;nia",b:"Argentina",                 kick:"2026-06-27T23:00"},
   // GRUPO K
-  {id:61,g:"K",d:"17/06",a:"Portugal",b:"Rep. Dem. Congo"},
-  {id:62,g:"K",d:"17/06",a:"Uzbequist&#227;o",b:"Col&#244;mbia"},
-  {id:63,g:"K",d:"23/06",a:"Portugal",b:"Uzbequist&#227;o"},
-  {id:64,g:"K",d:"23/06",a:"Col&#244;mbia",b:"Rep. Dem. Congo"},
-  {id:65,g:"K",d:"27/06",a:"Col&#244;mbia",b:"Portugal"},
-  {id:66,g:"K",d:"27/06",a:"Rep. Dem. Congo",b:"Uzbequist&#227;o"},
+  {id:61,g:"K",d:"17/06",a:"Portugal",b:"Rep. Dem. Congo",                kick:"2026-06-17T14:00"},
+  {id:62,g:"K",d:"17/06",a:"Uzbequist&#227;o",b:"Col&#244;mbia",          kick:"2026-06-17T21:00"},
+  {id:63,g:"K",d:"23/06",a:"Portugal",b:"Uzbequist&#227;o",               kick:"2026-06-23T14:00"},
+  {id:64,g:"K",d:"23/06",a:"Col&#244;mbia",b:"Rep. Dem. Congo",           kick:"2026-06-23T23:00"},
+  {id:65,g:"K",d:"27/06",a:"Col&#244;mbia",b:"Portugal",                  kick:"2026-06-27T20:30"},
+  {id:66,g:"K",d:"27/06",a:"Rep. Dem. Congo",b:"Uzbequist&#227;o",        kick:"2026-06-27T20:30"},
   // GRUPO L
-  {id:67,g:"L",d:"17/06",a:"Inglaterra",b:"Cro&#225;cia"},
-  {id:68,g:"L",d:"17/06",a:"Gana",b:"Panam&#225;"},
-  {id:69,g:"L",d:"23/06",a:"Inglaterra",b:"Gana"},
-  {id:70,g:"L",d:"23/06",a:"Panam&#225;",b:"Cro&#225;cia"},
-  {id:71,g:"L",d:"27/06",a:"Panam&#225;",b:"Inglaterra"},
-  {id:72,g:"L",d:"27/06",a:"Cro&#225;cia",b:"Gana"}
+  {id:67,g:"L",d:"17/06",a:"Inglaterra",b:"Cro&#225;cia",                 kick:"2026-06-17T17:00"},
+  {id:68,g:"L",d:"17/06",a:"Gana",b:"Panam&#225;",                        kick:"2026-06-17T20:00"},
+  {id:69,g:"L",d:"23/06",a:"Inglaterra",b:"Gana",                         kick:"2026-06-23T17:00"},
+  {id:70,g:"L",d:"23/06",a:"Panam&#225;",b:"Cro&#225;cia",               kick:"2026-06-23T20:00"},
+  {id:71,g:"L",d:"27/06",a:"Panam&#225;",b:"Inglaterra",                  kick:"2026-06-27T18:00"},
+  {id:72,g:"L",d:"27/06",a:"Cro&#225;cia",b:"Gana",                       kick:"2026-06-27T18:00"}
 ];
+
+
+// ── Deadline checks ──
+const COPA_START = new Date("2026-06-11T16:00:00-03:00");
+
+function jogoExpirado(jogo) {
+  if (!jogo.kick) return false;
+  const kick = new Date(jogo.kick + ":00-03:00");
+  const limite = new Date(kick.getTime() - 30 * 60 * 1000); // 30 min antes
+  return new Date() >= limite;
+}
+
+function artilheiroExpirado() {
+  return new Date() >= COPA_START;
+}
+
+function badgePrazo(jogo) {
+  if (jogoExpirado(jogo)) {
+    return '<span style="font-size:9px;background:#ffebee;color:#c62828;border:1px solid #ef9a9a;padding:2px 7px;border-radius:20px;font-weight:700;">Encerrado</span>';
+  }
+  const kick = new Date(jogo.kick + ":00-03:00");
+  const limite = new Date(kick.getTime() - 30 * 60 * 1000);
+  const diff = limite - new Date();
+  if (diff > 0 && diff < 3600000) { // menos de 1h
+    const min = Math.floor(diff / 60000);
+    return '<span style="font-size:9px;background:#fff3e0;color:#e65100;border:1px solid #ffcc80;padding:2px 7px;border-radius:20px;font-weight:700;">Fecha em ' + min + 'min</span>';
+  }
+  return '';
+}
 
 let usuarioAtual = null;
 let adminLogado = false;
@@ -629,6 +658,13 @@ async function entrarComoUsuario(){
   document.getElementById("hdr-user").style.display="inline";
   document.getElementById("hdr-user").textContent=">> "+usuarioAtual.nome.split(" ")[0];
   document.getElementById("hdr-logout").style.display="inline";
+  // Lock artilheiro if Copa already started
+  if (artilheiroExpirado()) {
+    document.getElementById("artilheiro-wrap").style.display = "none";
+    document.getElementById("artilheiro-locked").style.display = "block";
+    const inp = document.getElementById("input-artilheiro");
+    if (inp) inp.disabled = true;
+  }
   showTab("palpites",document.querySelector(".nav-tab"));
   await carregarPalpitesUsuario();
 }
