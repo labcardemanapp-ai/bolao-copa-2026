@@ -734,19 +734,17 @@ function renderJogos(dados){
         const va=dados&&dados["j"+j.id+"a"]!==undefined?dados["j"+j.id+"a"]:"";
         const vb=dados&&dados["j"+j.id+"b"]!==undefined?dados["j"+j.id+"b"]:"";
         const exp=jogoExpirado(j);
-        const disAttr=exp?' disabled':'';
-        const dimStyle=exp?'color:#bbb;':'';
         return'<div class="jogo-card'+(exp?' jogo-encerrado':'')+'">'
           +'<div class="jogo-meta"><span class="jogo-grp">Grupo '+j.g+'</span><span class="jogo-data">&#128197; '+j.d+'/2026</span>'
           +badgePrazo(j)+'</div>'
           +'<div class="placar-row">'
-          +'<span class="time-a" style="'+dimStyle+'">'+j.a+'</span>'
+          +(exp?'<span class="time-a" style="color:#bbb">':'<span class="time-a">')+j.a+'</span>'
           +'<div class="placar-inputs">'
-          +'<input type="number" min="0" max="20" placeholder="—" id="pa-'+j.id+'" value="'+va+'"'+disAttr+' oninput="updateProg()">'
+          +'<input type="number" min="0" max="20" placeholder="—" id="pa-'+j.id+'" value="'+va+'"'+(exp?' disabled':'')+' oninput="updateProg()">'
           +'<span class="vs-txt">×</span>'
-          +'<input type="number" min="0" max="20" placeholder="—" id="pb-'+j.id+'" value="'+vb+'"'+disAttr+' oninput="updateProg()">'
+          +'<input type="number" min="0" max="20" placeholder="—" id="pb-'+j.id+'" value="'+vb+'"'+(exp?' disabled':'')+' oninput="updateProg()">'
           +'</div>'
-          +'<span class="time-b" style="'+dimStyle+'">'+j.b+'</span>'
+          +(exp?'<span class="time-b" style="color:#bbb">':'<span class="time-b">')+j.b+'</span>'
           +'</div></div>';
       }).join("")+'</div>';
     c.appendChild(d);
