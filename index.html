@@ -693,10 +693,14 @@ async function entrarComoUsuario(){
   // Sync server time first, then check deadlines
   await sincronizarHora();
   if (artilheiroExpirado()) {
-    document.getElementById("artilheiro-wrap").style.display = "none";
-    document.getElementById("artilheiro-locked").style.display = "block";
     const inp = document.getElementById("input-artilheiro");
-    if (inp) inp.disabled = true;
+    if (inp) {
+      inp.disabled = true;
+      inp.placeholder = "Encerrado — Copa já começou";
+      inp.style.background = "#f0f0f0";
+      inp.style.color = "#aaa";
+      inp.style.cursor = "not-allowed";
+    }
   }
   showTab("palpites",document.querySelector(".nav-tab"));
   await carregarPalpitesUsuario();
