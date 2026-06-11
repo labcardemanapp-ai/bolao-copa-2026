@@ -109,6 +109,8 @@ input::placeholder{color:#bbb;}
 .grupo-jogos.open{display:block;}
 .jogo-card{background:#fafefe;border:1.5px solid #ccc;border-radius:9px;padding:10px 12px;margin-bottom:6px;}
 .jogo-card:hover{border-color:rgba(14,184,168,0.45);}
+.jogo-encerrado{background:#fafafa;border-color:#e0e0e0 !important;opacity:0.75;}
+.jogo-encerrado input[type="number"]{background:#f0f0f0;color:#aaa;border-color:#ddd;cursor:not-allowed;}
 .jogo-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
 .jogo-grp{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,var(--teal),var(--green));padding:2px 8px;border-radius:20px;}
 .jogo-data{font-size:10px;color:#aaa;}
@@ -731,16 +733,20 @@ function renderJogos(dados){
       +jg.map(j=>{
         const va=dados&&dados["j"+j.id+"a"]!==undefined?dados["j"+j.id+"a"]:"";
         const vb=dados&&dados["j"+j.id+"b"]!==undefined?dados["j"+j.id+"b"]:"";
-        return'<div class="jogo-card">'
-          +'<div class="jogo-meta"><span class="jogo-grp">Grupo '+j.g+'</span><span class="jogo-data">&#128197; '+j.d+'/2026</span></div>'
+        const exp=jogoExpirado(j);
+        const disAttr=exp?' disabled':'';
+        const dimStyle=exp?'color:#bbb;':'';
+        return'<div class="jogo-card'+(exp?' jogo-encerrado':'')+'">'
+          +'<div class="jogo-meta"><span class="jogo-grp">Grupo '+j.g+'</span><span class="jogo-data">&#128197; '+j.d+'/2026</span>'
+          +badgePrazo(j)+'</div>'
           +'<div class="placar-row">'
-          +'<span class="time-a">'+j.a+'</span>'
+          +'<span class="time-a" style="'+dimStyle+'">'+j.a+'</span>'
           +'<div class="placar-inputs">'
-          +'<input type="number" min="0" max="20" placeholder="—" id="pa-'+j.id+'" value="'+va+'" oninput="updateProg()">'
+          +'<input type="number" min="0" max="20" placeholder="—" id="pa-'+j.id+'" value="'+va+'"'+disAttr+' oninput="updateProg()">'
           +'<span class="vs-txt">×</span>'
-          +'<input type="number" min="0" max="20" placeholder="—" id="pb-'+j.id+'" value="'+vb+'" oninput="updateProg()">'
+          +'<input type="number" min="0" max="20" placeholder="—" id="pb-'+j.id+'" value="'+vb+'"'+disAttr+' oninput="updateProg()">'
           +'</div>'
-          +'<span class="time-b">'+j.b+'</span>'
+          +'<span class="time-b" style="'+dimStyle+'">'+j.b+'</span>'
           +'</div></div>';
       }).join("")+'</div>';
     c.appendChild(d);
