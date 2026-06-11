@@ -547,26 +547,56 @@ const JOGOS = [
 
 
 // ── Deadline checks ──
-const COPA_START = new Date("2026-06-11T16:00:00-03:00");
+const COPA_START_MS = Date.UTC(2026, 5, 11, 19, 0, 0); // 11/jun/2026 16:00 Brasilia = 19:00 UTC
+
+// Busca hora real do servidor via API publica — evita problema de relogio do usuario
+let _serverTimeOffset = 0; // diferenca entre hora do servidor e hora local em ms
+async function sincronizarHora() {
+  try {
+    const t1 = Date.now();
+    const resp = await fetch("https://worldtimeapi.org/api/timezone/America/Sao_Paulo");
+    const t2 = Date.now();
+    const data = await resp.json();
+    const serverMs = new Date(data.datetime).getTime();
+    const latency = (t2 - t1) / 2;
+    _serverTimeOffset = serverMs - (t2 - latency);
+  } catch(e) {
+    _serverTimeOffset = 0; // fallback para hora local
+  }
+}
+
+function agora() {
+  return new Date(Date.now() + _serverTimeOffset);
+}
+
+function kickUTC(jogo) {
+  // kick esta em formato "2026-06-11T16:00" horario Brasilia (UTC-3)
+  // converte para UTC somando 3h
+  if (!jogo.kick) return null;
+  const [datePart, timePart] = jogo.kick.split("T");
+  const [y,mo,d] = datePart.split("-").map(Number);
+  const [h,min] = timePart.split(":").map(Number);
+  return Date.UTC(y, mo-1, d, h+3, min, 0); // +3h = Brasilia para UTC
+}
 
 function jogoExpirado(jogo) {
-  if (!jogo.kick) return false;
-  const kick = new Date(jogo.kick + ":00-03:00");
-  const limite = new Date(kick.getTime() - 30 * 60 * 1000); // 30 min antes
-  return new Date() >= limite;
+  const kick = kickUTC(jogo);
+  if (!kick) return false;
+  const limite = kick - 30 * 60 * 1000; // 30 min antes do kick em UTC
+  return agora().getTime() >= limite;
 }
 
 function artilheiroExpirado() {
-  return new Date() >= COPA_START;
+  return agora().getTime() >= COPA_START_MS;
 }
 
 function badgePrazo(jogo) {
   if (jogoExpirado(jogo)) {
     return '<span style="font-size:9px;background:#ffebee;color:#c62828;border:1px solid #ef9a9a;padding:2px 7px;border-radius:20px;font-weight:700;">Encerrado</span>';
   }
-  const kick = new Date(jogo.kick + ":00-03:00");
-  const limite = new Date(kick.getTime() - 30 * 60 * 1000);
-  const diff = limite - new Date();
+  const kick = kickUTC(jogo);
+  const limite = kick - 30 * 60 * 1000;
+  const diff = limite - agora().getTime();
   if (diff > 0 && diff < 3600000) { // menos de 1h
     const min = Math.floor(diff / 60000);
     return '<span style="font-size:9px;background:#fff3e0;color:#e65100;border:1px solid #ffcc80;padding:2px 7px;border-radius:20px;font-weight:700;">Fecha em ' + min + 'min</span>';
@@ -658,7 +688,8 @@ async function entrarComoUsuario(){
   document.getElementById("hdr-user").style.display="inline";
   document.getElementById("hdr-user").textContent=">> "+usuarioAtual.nome.split(" ")[0];
   document.getElementById("hdr-logout").style.display="inline";
-  // Lock artilheiro if Copa already started
+  // Sync server time first, then check deadlines
+  await sincronizarHora();
   if (artilheiroExpirado()) {
     document.getElementById("artilheiro-wrap").style.display = "none";
     document.getElementById("artilheiro-locked").style.display = "block";
