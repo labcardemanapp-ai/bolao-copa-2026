@@ -380,6 +380,7 @@ footer strong{color:#fff;}
       <li>&#128290; Empate desfeito por <strong>mais placares exatos</strong></li>
       <li>&#128260; Resultados atualizados <strong>automaticamente via API</strong></li>
       <li>&#127941; <strong>1 premiação</strong> ao final da fase de grupos</li>
+      <li>&#11088; O palpite do <strong>artilheiro</strong> fechou antes do 1º jogo da Copa, mas foi <strong>reaberto excepcionalmente no dia 15/06/2026</strong> para quem ainda não preencheu</li>
     </ul>
   </div>
   <div class="card">
@@ -595,9 +596,17 @@ function jogoExpirado(jogo) {
   const limite = kick - 30 * 60 * 1000; // 30 min antes do kick em UTC
   return agora().getTime() >= limite;
 }
-
+// Reabertura excepcional do artilheiro — dia 15/06/2026 (00:00 às 23:59 horário de Brasília)
+const ARTILHEIRO_REABERTURA_INICIO = Date.UTC(2026, 5, 15, 3, 0, 0); // 15/06 00:00 BR = 03:00 UTC
+const ARTILHEIRO_REABERTURA_FIM    = Date.UTC(2026, 5, 16, 3, 0, 0); // 16/06 00:00 BR = 03:00 UTC
+  
 function artilheiroExpirado() {
-  return agora().getTime() >= COPA_START_MS;
+  const now = agora().getTime();
+  // Janela de reabertura excepcional
+  if (now >= ARTILHEIRO_REABERTURA_INICIO && now < ARTILHEIRO_REABERTURA_FIM) {
+    return false;
+  }
+  return now >= COPA_START_MS;
 }
 
 function badgePrazo(jogo) {
