@@ -111,9 +111,17 @@ input::placeholder{color:#bbb;}
 .jogo-card:hover{border-color:rgba(14,184,168,0.45);}
 .jogo-encerrado{background:#fafafa;border-color:#e0e0e0 !important;opacity:0.75;}
 .jogo-encerrado input[type="number"]{background:#f0f0f0;color:#aaa;border-color:#ddd;cursor:not-allowed;}
+  
+  /* RESULTADO REAL NOS PALPITES */
+.resultado-real{margin-top:8px;padding:7px 11px;background:#f0faf8;border:1px solid #b2e5dd;border-radius:9px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+.resultado-real .res-label{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#0EB8A8;}
+.resultado-real .res-placar{font-size:13px;font-weight:700;color:#1a2e1e;}
+.resultado-real .res-placar strong{font-size:16px;color:#0EB8A8;margin:0 2px;}
+.resultado-real .res-pts{font-size:11px;font-weight:800;white-space:nowrap;}
 .jogo-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
 .jogo-grp{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,var(--teal),var(--green));padding:2px 8px;border-radius:20px;}
 .jogo-data{font-size:10px;color:#aaa;}
+  
 /* PLACAR ROW — fixed layout */
 .placar-row{display:flex;align-items:center;gap:6px;}
 .time-a{flex:1;font-weight:700;font-size:13px;color:#1a2e1e;text-align:left;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -720,11 +728,16 @@ window.logout = function(){
 // ── palpites ──
 async function carregarPalpitesUsuario(){
   const id=uid(usuarioAtual.usuario);
-  const snap=await getDoc(doc(db,"palpites",id));
-  renderJogos(snap.exists()?snap.data():null);
+  const [pSnap,rSnap]=await Promise.all([
+    getDoc(doc(db,"palpites",id)),
+    getDocs(collection(db,"resultados"))
+  ]);
+  const resultados={};
+  rSnap.forEach(d=>{resultados[d.id]=d.data();});
+  renderJogos(pSnap.exists()?pSnap.data():null,resultados);
 }
 
-function renderJogos(dados){
+function renderJogos(dados,resultados={}){
   const c=document.getElementById("jogos-container");
   const grupos=[...new Set(JOGOS.map(j=>j.g))];
   c.innerHTML="";
@@ -738,6 +751,26 @@ function renderJogos(dados){
         const va=dados&&dados["j"+j.id+"a"]!==undefined?dados["j"+j.id+"a"]:"";
         const vb=dados&&dados["j"+j.id+"b"]!==undefined?dados["j"+j.id+"b"]:"";
         const exp=jogoExpirado(j);
+        // ── resultado real lançado pelo admin ──
+        const r=resultados["j"+j.id];
+        const temResultado=r&&r.ga!==""&&r.gb!==""&&r.ga!==undefined&&r.gb!==undefined;
+        let resultadoHtml="";
+        if(temResultado){
+          let resPts="";
+          if(va!==""&&vb!==""){
+            const pts=calcPontos(va,vb,r.ga,r.gb);
+            let cor="#999",txt="0 pts";
+            if(pts===5){cor="#2e7d32";txt="Placar exato · +5 pts";}
+            else if(pts===3){cor="#0EB8A8";txt="+3 pts";}
+            else if(pts===1){cor="#FFA000";txt="+1 pt";}
+            resPts='<span class="res-pts" style="color:'+cor+'">'+txt+'</span>';
+          }
+          resultadoHtml='<div class="resultado-real">'
+            +'<span class="res-label">&#9917; Resultado final</span>'
+            +'<span class="res-placar">'+j.a+' <strong>'+r.ga+'</strong>×<strong>'+r.gb+'</strong> '+j.b+'</span>'
+            +resPts
+            +'</div>';
+        }
         return'<div class="jogo-card'+(exp?' jogo-encerrado':'')+'">'
           +'<div class="jogo-meta"><span class="jogo-grp">Grupo '+j.g+'</span><span class="jogo-data">&#128197; '+j.d+'/2026</span>'
           +badgePrazo(j)+'</div>'
@@ -749,7 +782,9 @@ function renderJogos(dados){
           +'<input type="number" min="0" max="20" placeholder="—" id="pb-'+j.id+'" value="'+vb+'"'+(exp?' disabled':'')+' oninput="updateProg()">'
           +'</div>'
           +(exp?'<span class="time-b" style="color:#bbb">':'<span class="time-b">')+j.b+'</span>'
-          +'</div></div>';
+          +'</div>'
+          +resultadoHtml
+          +'</div>';
       }).join("")+'</div>';
     c.appendChild(d);
   });
