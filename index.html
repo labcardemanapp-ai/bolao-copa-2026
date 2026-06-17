@@ -626,6 +626,7 @@ function badgePrazo(jogo) {
 let usuarioAtual = null;
 let adminLogado = false;
 let autoUpdateInterval = null;
+let dadosAntigos = null;
 
 // ── utils ──
 function toast(msg,dur=2800){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),dur);}
@@ -721,6 +722,7 @@ async function entrarComoUsuario(){
   }
   showTab("palpites",document.querySelector(".nav-tab"));
   await carregarPalpitesUsuario();
+  iniciarDeadlineChecker();
 }
 
 window.logout = function(){
@@ -732,6 +734,7 @@ window.logout = function(){
   showTab("auth",null);
   switchAuth("login");
   if(autoUpdateInterval) clearInterval(autoUpdateInterval);
+  if (deadlineChecker) clearInterval(deadlineChecker); 
 };
 
 // ── palpites ──
@@ -743,6 +746,7 @@ async function carregarPalpitesUsuario(){
   ]);
   const resultados={};
   rSnap.forEach(d=>{resultados[d.id]=d.data();});
+  dadosAntigos = pSnap.exists() ? pSnap.data() : {};
   renderJogos(pSnap.exists()?pSnap.data():null,resultados);
 }
 
@@ -800,7 +804,65 @@ function renderJogos(dados,resultados={}){
   if(dados&&dados.artilheiro) document.getElementById("input-artilheiro").value=dados.artilheiro;
   updateProg();
 }
+// ── Verificação periódica de deadlines ──
+let deadlineChecker = null;
 
+function iniciarDeadlineChecker() {
+  if (deadlineChecker) clearInterval(deadlineChecker);
+
+  deadlineChecker = setInterval(() => {
+    JOGOS.forEach(j => {
+      const inputA = document.getElementById("pa-" + j.id);
+      const inputB = document.getElementById("pb-" + j.id);
+      if (!inputA || !inputB) return;          // jogo não está na tela
+      if (inputA.disabled) return;             // já estava bloqueado
+
+      if (jogoExpirado(j)) {
+        // Bloqueia os inputs
+        inputA.disabled = true;
+        inputB.disabled = true;
+        inputA.style.background = "#f0f0f0";
+        inputB.style.background = "#f0f0f0";
+        inputA.style.color = "#aaa";
+        inputB.style.color = "#aaa";
+        inputA.style.cursor = "not-allowed";
+        inputB.style.cursor = "not-allowed";
+
+        // Atualiza o badge de prazo no card
+        const card = inputA.closest(".jogo-card");
+        if (card) {
+          card.classList.add("jogo-encerrado");
+          const meta = card.querySelector(".jogo-meta");
+          if (meta) {
+            // Remove badge antigo de "fecha em Xmin" se existir
+            const badgeAntigo = meta.querySelector("span:last-child");
+            if (badgeAntigo && badgeAntigo !== meta.firstElementChild
+                && badgeAntigo !== meta.children[1]) {
+              badgeAntigo.remove();
+            }
+            // Insere badge "Encerrado"
+            const enc = document.createElement("span");
+            enc.style.cssText = "font-size:9px;background:#ffebee;color:#c62828;border:1px solid #ef9a9a;padding:2px 7px;border-radius:20px;font-weight:700;";
+            enc.textContent = "Encerrado";
+            meta.appendChild(enc);
+          }
+        }
+      }
+    });
+
+    // Bloqueia artilheiro se expirou durante a sessão
+    const inputArt = document.getElementById("input-artilheiro");
+    if (inputArt && !inputArt.disabled && artilheiroExpirado()) {
+      inputArt.disabled = true;
+      inputArt.placeholder = "Encerrado — Copa já começou";
+      inputArt.style.background = "#f0f0f0";
+      inputArt.style.color = "#aaa";
+      inputArt.style.cursor = "not-allowed";
+    }
+
+  }, 60 * 1000); // roda a cada 1 minuto
+}
+  
 window.toggleG=function(id){document.getElementById(id).classList.toggle("open");};
 window.updateProg=function(){
   let f=0;
@@ -813,20 +875,30 @@ window.updateProg=function(){
 window.salvarPalpites=async function(){
   if(!usuarioAtual)return;
   let m=0;
-  JOGOS.forEach(j=>{const a=document.getElementById("pa-"+j.id),b=document.getElementById("pb-"+j.id);if(!a||a.value===""||!b||b.value==="")m++;});
+  JOGOS.forEach(j=>{
+    if(jogoExpirado(j))return; // não conta jogos já fechados
+    const a=document.getElementById("pa-"+j.id),b=document.getElementById("pb-"+j.id);
+    if(!a||a.value===""||!b||b.value==="")m++;
+  });
   if(m>0&&!confirm("Você deixou "+m+" jogo(s) sem palpite. Salvar assim mesmo?"))return;
   const id=uid(usuarioAtual.usuario);
   const dados={nome:usuarioAtual.nome,usuario:id,artilheiro:document.getElementById("input-artilheiro").value.trim(),updatedAt:serverTimestamp()};
   JOGOS.forEach(j=>{
-    dados["j"+j.id+"a"]=document.getElementById("pa-"+j.id)?.value??"";
-    dados["j"+j.id+"b"]=document.getElementById("pb-"+j.id)?.value??"";
+    if(jogoExpirado(j)){
+      // jogo fechado — preserva o que já estava salvo, ignora o que está na tela
+      dados["j"+j.id+"a"]=dadosAntigos?.["j"+j.id+"a"]??"";
+      dados["j"+j.id+"b"]=dadosAntigos?.["j"+j.id+"b"]??"";
+    } else {
+      dados["j"+j.id+"a"]=document.getElementById("pa-"+j.id)?.value??"";
+      dados["j"+j.id+"b"]=document.getElementById("pb-"+j.id)?.value??"";
+    }
   });
   await setDoc(doc(db,"palpites",id),dados);
   document.getElementById("success-screen").style.display="block";
   document.getElementById("success-nome").textContent=usuarioAtual.nome.split(" ")[0];
   toast("Palpites salvos! ✔");
 };
-
+  
 // ── ranking ──
 async function carregarRanking(){
   const list=document.getElementById("ranking-list");
