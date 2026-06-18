@@ -874,9 +874,16 @@ window.updateProg=function(){
 
 window.salvarPalpites=async function(){
   if(!usuarioAtual)return;
+
+  // Segurança: se dadosAntigos for null, busca do Firebase antes de salvar
+  if(!dadosAntigos){
+    const snap=await getDoc(doc(db,"palpites",uid(usuarioAtual.usuario)));
+    dadosAntigos=snap.exists()?snap.data():{};
+  }
+
   let m=0;
   JOGOS.forEach(j=>{
-    if(jogoExpirado(j))return; // não conta jogos já fechados
+    if(jogoExpirado(j))return;
     const a=document.getElementById("pa-"+j.id),b=document.getElementById("pb-"+j.id);
     if(!a||a.value===""||!b||b.value==="")m++;
   });
@@ -885,7 +892,6 @@ window.salvarPalpites=async function(){
   const dados={nome:usuarioAtual.nome,usuario:id,artilheiro:document.getElementById("input-artilheiro").value.trim(),updatedAt:serverTimestamp()};
   JOGOS.forEach(j=>{
     if(jogoExpirado(j)){
-      // jogo fechado — preserva o que já estava salvo, ignora o que está na tela
       dados["j"+j.id+"a"]=dadosAntigos?.["j"+j.id+"a"]??"";
       dados["j"+j.id+"b"]=dadosAntigos?.["j"+j.id+"b"]??"";
     } else {
