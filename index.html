@@ -414,7 +414,10 @@ footer strong{color:#fff;}
     <div class="card" style="margin-bottom:1rem;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
         <div class="card-title" style="margin:0">&#9881; Painel Admin</div>
-        <button class="btn btn-danger btn-sm" onclick="logoutAdmin()">Sair</button>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-primary btn-sm" onclick="baixarBackup()" style="background:linear-gradient(135deg,#43a047,#1b5e20);">&#128190; Backup</button>
+          <button class="btn btn-danger btn-sm" onclick="logoutAdmin()">Sair</button>
+        </div>
       </div>
       <p style="font-size:12px;color:#777;margin-bottom:1rem;">Resultados são buscados automaticamente via API. Você pode corrigir manualmente se necessário.</p>
       <div class="form-group">
@@ -1068,6 +1071,46 @@ window.buscarResultadosAPI=async function(verbose=true){
     if(verbose)toast("&#10060; Erro na API. Verifique a chave.");
   }
 };
+window.baixarBackup = async function(){
+  toast("⏳ Gerando backup...");
+  try {
+    const [pSnap, rSnap, uSnap, cSnap] = await Promise.all([
+      getDocs(collection(db, "palpites")),
+      getDocs(collection(db, "resultados")),
+      getDocs(collection(db, "usuarios")),
+      getDoc(doc(db, "config", "artilheiro"))
+    ]);
+
+    const backup = {
+      geradoEm: new Date().toISOString(),
+      palpites: {},
+      resultados: {},
+      usuarios: {},
+      config: {}
+    };
+
+    pSnap.forEach(d => { backup.palpites[d.id] = d.data(); });
+    rSnap.forEach(d => { backup.resultados[d.id] = d.data(); });
+    uSnap.forEach(d => {
+      const u = d.data();
+      backup.usuarios[d.id] = { nome: u.nome, usuario: u.usuario }; // omite senha
+    });
+    if (cSnap.exists()) backup.config.artilheiro = cSnap.data();
+
+    const json = JSON.stringify(backup, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "backup-bolao-" + new Date().toISOString().slice(0,10) + ".json";
+    a.click();
+    URL.revokeObjectURL(url);
+    toast("✅ Backup baixado!");
+  } catch(e) {
+    toast("❌ Erro ao gerar backup: " + e.message);
+  }
+};
+  
 </script>
 </body>
 </html>
