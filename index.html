@@ -969,6 +969,7 @@ window.loginAdmin=function(){
     document.getElementById("admin-painel").style.display="block";
     carregarAdminJogos();
     carregarArtilheiroAdmin();
+    carregarSelectAuditoria();
     // auto-update a cada 5 min
     autoUpdateInterval=setInterval(()=>buscarResultadosAPI(false),300000);
   } else toast("&#10060; Credenciais incorretas.");
