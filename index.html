@@ -439,6 +439,20 @@ footer strong{color:#fff;}
     </div>
 
     <div id="admin-jogos-container"><div class="loading"><span class="spinner"></span>Carregando jogos...</div></div>
+
+    <!-- AUDITORIA -->
+    <div class="card" style="margin-top:1rem;border-color:#7c4dff;">
+      <div class="card-title" style="color:#7c4dff;">&#128269; Auditoria de Palpites</div>
+      <p style="font-size:12px;color:#777;margin-bottom:1rem;">Selecione um usuário para ver todos os palpites e recalcular os pontos.</p>
+      <div class="form-group">
+        <label>Usuário</label>
+        <select id="audit-select" style="width:100%;padding:11px 13px;border:2px solid #888;border-radius:10px;font-family:'Nunito',sans-serif;font-size:14px;">
+          <option value="">— Selecione —</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="auditarUsuario()" style="width:auto;padding:9px 20px;background:linear-gradient(135deg,#7c4dff,#512da8);">&#128269; Auditar</button>
+      <div id="audit-resultado" style="margin-top:1rem;"></div>
+    </div>
   </div>
 </div>
 
@@ -1110,7 +1124,151 @@ window.baixarBackup = async function(){
     toast("❌ Erro ao gerar backup: " + e.message);
   }
 };
-  
+
+// ── AUDITORIA ──
+async function carregarSelectAuditoria() {
+  const snap = await getDocs(collection(db, "palpites"));
+  const sel = document.getElementById("audit-select");
+  sel.innerHTML = '<option value="">— Selecione —</option>';
+  snap.forEach(d => {
+    const opt = document.createElement("option");
+    opt.value = d.id;
+    opt.textContent = d.data().nome || d.id;
+    sel.appendChild(opt);
+  });
+}
+
+window.auditarUsuario = async function() {
+  const uid = document.getElementById("audit-select").value;
+  if (!uid) { toast("⚠️ Selecione um usuário."); return; }
+
+  const div = document.getElementById("audit-resultado");
+  div.innerHTML = '<div class="loading"><span class="spinner"></span>Analisando...</div>';
+
+  const [pSnap, rSnap, cSnap] = await Promise.all([
+    getDoc(doc(db, "palpites", uid)),
+    getDocs(collection(db, "resultados")),
+    getDoc(doc(db, "config", "artilheiro"))
+  ]);
+
+  if (!pSnap.exists()) { div.innerHTML = '<p style="color:red">Usuário sem palpites.</p>'; return; }
+
+  const p = pSnap.data();
+  const res = {};
+  rSnap.forEach(d => { res[d.id] = d.data(); });
+  const artReal = (cSnap.exists() ? cSnap.data().nome : "").toLowerCase().trim();
+
+  let totalPts = 0, totalEx = 0;
+  let linhas = "";
+
+  JOGOS.forEach(j => {
+    const pa = p["j"+j.id+"a"];
+    const pb = p["j"+j.id+"b"];
+    const r  = res["j"+j.id];
+    const temResultado = r && r.ga !== "" && r.gb !== "" && r.ga !== undefined;
+    const temPalpite = pa !== "" && pa !== undefined && pb !== "" && pb !== undefined;
+
+    let pts = 0, badge = "", palpiteStr = "", resultadoStr = "";
+
+    if (temPalpite) {
+      palpiteStr = pa + "×" + pb;
+    } else {
+      palpiteStr = '<span style="color:#e53935">sem palpite</span>';
+    }
+
+    if (temResultado) {
+      resultadoStr = r.ga + "×" + r.gb;
+      if (temPalpite) {
+        pts = calcPontos(pa, pb, r.ga, r.gb);
+        totalPts += pts;
+        if (pts === 5) { totalEx++; badge = '<span style="background:#e8f5e9;color:#2e7d32;padding:1px 6px;border-radius:10px;font-size:10px;font-weight:700;">+5 exato</span>'; }
+        else if (pts === 3) { badge = '<span style="background:#e0f7fa;color:#006064;padding:1px 6px;border-radius:10px;font-size:10px;font-weight:700;">+3</span>'; }
+        else if (pts === 1) { badge = '<span style="background:#fff3e0;color:#e65100;padding:1px 6px;border-radius:10px;font-size:10px;font-weight:700;">+1</span>'; }
+        else { badge = '<span style="background:#ffebee;color:#c62828;padding:1px 6px;border-radius:10px;font-size:10px;font-weight:700;">0</span>'; }
+      } else {
+        badge = '<span style="background:#ffebee;color:#c62828;padding:1px 6px;border-radius:10px;font-size:10px;font-weight:700;">0</span>';
+      }
+    } else {
+      resultadoStr = '<span style="color:#aaa">—</span>';
+      badge = '<span style="color:#aaa;font-size:10px;">aguardando</span>';
+    }
+
+    // destaca linha com palpite zerado mas com resultado
+    const alerta = temResultado && !temPalpite
+      ? 'style="background:#fff8e1;border-left:3px solid #ffa000;"'
+      : '';
+
+    linhas += '<tr '+alerta+'>'
+      + '<td style="padding:6px 8px;font-size:11px;color:#777;">'+j.g+'</td>'
+      + '<td style="padding:6px 8px;font-size:11px;">'+j.a+' × '+j.b+'</td>'
+      + '<td style="padding:6px 8px;font-size:12px;font-weight:700;text-align:center;">'+palpiteStr+'</td>'
+      + '<td style="padding:6px 8px;font-size:12px;text-align:center;">'+resultadoStr+'</td>'
+      + '<td style="padding:6px 8px;text-align:center;">'+badge+'</td>'
+      + '</tr>';
+  });
+
+  // artilheiro
+  const artPalpite = p.artilheiro || "";
+  const artAcertou = artReal && artPalpite.toLowerCase().trim() === artReal;
+  if (artAcertou) totalPts += 10;
+
+  div.innerHTML = `
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:1rem;">
+      <div style="background:#e8f5e9;border-radius:10px;padding:10px 16px;text-align:center;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#2e7d32;">${totalPts}</div>
+        <div style="font-size:10px;color:#666;">PONTOS TOTAIS</div>
+      </div>
+      <div style="background:#e0f7fa;border-radius:10px;padding:10px 16px;text-align:center;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#006064;">${totalEx}</div>
+        <div style="font-size:10px;color:#666;">PLACARES EXATOS</div>
+      </div>
+      <div style="background:#f3e5f5;border-radius:10px;padding:10px 16px;text-align:center;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:#6a1b9a;margin-top:4px;">${artPalpite || "—"}</div>
+        <div style="font-size:10px;color:#666;">ARTILHEIRO PALPITADO</div>
+      </div>
+      <div style="background:#fff3e0;border-radius:10px;padding:10px 16px;text-align:center;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:#e65100;margin-top:4px;">${artReal || "—"}</div>
+        <div style="font-size:10px;color:#666;">ARTILHEIRO REAL</div>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#aaa;margin-bottom:6px;">&#128993; Linhas amarelas = resultado lançado mas palpite está vazio (possível bug)</p>
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead>
+          <tr style="background:#f5f5f5;">
+            <th style="padding:6px 8px;text-align:left;font-size:10px;color:#999;">GRP</th>
+            <th style="padding:6px 8px;text-align:left;font-size:10px;color:#999;">JOGO</th>
+            <th style="padding:6px 8px;text-align:center;font-size:10px;color:#999;">PALPITE</th>
+            <th style="padding:6px 8px;text-align:center;font-size:10px;color:#999;">RESULTADO</th>
+            <th style="padding:6px 8px;text-align:center;font-size:10px;color:#999;">PTS</th>
+          </tr>
+        </thead>
+        <tbody>${linhas}</tbody>
+      </table>
+    </div>
+    <div style="margin-top:1rem;">
+      <button class="btn btn-primary btn-sm" onclick="baixarAuditoriaJSON('${uid}')" 
+        style="width:auto;padding:9px 20px;background:linear-gradient(135deg,#43a047,#1b5e20);">
+        &#128190; Baixar JSON deste usuário
+      </button>
+    </div>
+  `;
+};
+
+window.baixarAuditoriaJSON = async function(uid) {
+  const snap = await getDoc(doc(db, "palpites", uid));
+  if (!snap.exists()) return;
+  const json = JSON.stringify(snap.data(), null, 2);
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "palpites-" + uid + "-" + new Date().toISOString().slice(0,10) + ".json";
+  a.click();
+  URL.revokeObjectURL(url);
+  toast("✅ JSON baixado!");
+};  
+ 
 </script>
 </body>
 </html>
