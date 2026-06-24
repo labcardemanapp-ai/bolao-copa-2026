@@ -1068,9 +1068,10 @@ async function carregarFase2(){
   const c=document.getElementById("fase2-container");if(!usuarioAtual)return;
   c.innerHTML='<div class="loading"><span class="spinner"></span>Carregando...</div>';
   const id=uid(usuarioAtual.usuario);
-  const[pSnap,rSnap]=await Promise.all([getDoc(doc(db,"palpites_f2",id)),getDocs(collection(db,"resultados_f2"))]);
+  const[pSnap,rSnap,jSnap]=await Promise.all([getDoc(doc(db,"palpites_f2",id)),getDocs(collection(db,"resultados_f2")),getDoc(doc(db,"config","jogos_f2"))]);
   const dados=pSnap.exists()?pSnap.data():{};
   const resultados={};rSnap.forEach(d=>{resultados[d.id]=d.data();});
+  const jogosCustom=jSnap.exists()?jSnap.data():{};
   dadosAntigosF2=dados;
   const bExp=bonusF2Expirado();
   const inpC=document.getElementById("input-campeao"),inpV=document.getElementById("input-vice"),inpT=document.getElementById("input-terceiro");
@@ -1084,6 +1085,8 @@ async function carregarFase2(){
     bloco.innerHTML='<div class="grupo-header" onclick="toggleG(\'f2'+fase+'\')"><span>&#127942; '+faseLabel(fase)+'</span><span>&#9662;</span></div>'
       +'<div class="grupo-jogos '+(fi===0?"open":"")+'" id="f2'+fase+'">'
       +jogos.map(j=>{
+        const nA=jogosCustom["j"+j.id+"a"]||j.a;
+        const nB=jogosCustom["j"+j.id+"b"]||j.b;
         const va=dados["j"+j.id+"a"]!==undefined?dados["j"+j.id+"a"]:"";
         const vb=dados["j"+j.id+"b"]!==undefined?dados["j"+j.id+"b"]:"";
         const exp=jogoF2Expirado(j);const r=resultados["j"+j.id];
@@ -1093,18 +1096,18 @@ async function carregarFase2(){
           let rPts="";
           if(va!==""&&vb!==""){const pts=calcPontosF2(va,vb,r.ga,r.gb,r.vencedor);let cor="#999",txt="0 pts";if(pts===5){cor="#2e7d32";txt="Placar exato · +5 pts";}else if(pts===3){cor="#0EB8A8";txt="+3 pts";}else if(pts===1){cor="#FFA000";txt="+1 pt (avan&#231;ou)";}rPts='<span class="res-pts" style="color:'+cor+'">'+txt+'</span>';}
           const vL=r.vencedor?' · Passou: <strong>'+r.vencedor+'</strong>':'';
-          rHtml='<div class="resultado-real"><span class="res-label">&#9917; Resultado</span><span class="res-placar">'+j.a+' <strong>'+r.ga+'</strong>&#215;<strong>'+r.gb+'</strong> '+j.b+vL+'</span>'+rPts+'</div>';
+          rHtml='<div class="resultado-real"><span class="res-label">&#9917; Resultado</span><span class="res-placar">'+nA+' <strong>'+r.ga+'</strong>&#215;<strong>'+r.gb+'</strong> '+nB+vL+'</span>'+rPts+'</div>';
         }
         return'<div class="jogo-card'+(exp?' jogo-encerrado':'')+'">'
           +'<div class="jogo-meta"><span class="jogo-grp" style="background:linear-gradient(135deg,#7c4dff,#512da8)">'+faseLabel(fase)+' '+j.num+'</span><span class="jogo-data">&#128197; '+j.d+'/2026</span></div>'
           +'<div class="placar-row">'
-          +(exp?'<span class="time-a" style="color:#bbb">':'<span class="time-a">')+j.a+'</span>'
+          +(exp?'<span class="time-a" style="color:#bbb">':'<span class="time-a">')+nA+'</span>'
           +'<div class="placar-inputs">'
           +'<input type="number" min="0" max="20" placeholder="&#8212;" id="pa-f2-'+j.id+'" value="'+va+'"'+(exp?' disabled':'')+'>'
           +'<span class="vs-txt">&#215;</span>'
           +'<input type="number" min="0" max="20" placeholder="&#8212;" id="pb-f2-'+j.id+'" value="'+vb+'"'+(exp?' disabled':'')+'>'
           +'</div>'
-          +(exp?'<span class="time-b" style="color:#bbb">':'<span class="time-b">')+j.b+'</span>'
+          +(exp?'<span class="time-b" style="color:#bbb">':'<span class="time-b">')+nB+'</span>'
           +'</div>'+rHtml+'</div>';
       }).join("")+'</div>';
     c.appendChild(bloco);
