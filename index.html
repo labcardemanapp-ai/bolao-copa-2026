@@ -638,7 +638,7 @@ function kickUTC(jogo){
   const[dp,tp]=jogo.kick.split("T");
   const[y,mo,d]=dp.split("-").map(Number);
   const[h,min]=tp.split(":").map(Number);
-  return Date.UTC(y,mo-1,d,h+3,min,0);
+  return Date.UTC(y,mo-1,d,h,min,0);
 }
 function jogoExpirado(j){
   const k=kickUTC(j);if(!k)return false;
