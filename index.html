@@ -257,6 +257,7 @@ footer strong{color:#fff;}
 
 <div class="nav-tabs" id="nav-tabs" style="display:none">
   <button class="nav-tab active" onclick="showTab('palpites',this)">&#9917; Palpites</button>
+  <button class="nav-tab" onclick="showTab('fase2',this)">&#127942; 2ª Fase</button>
   <button class="nav-tab" onclick="showTab('ranking',this)">&#127942; Ranking</button>
   <button class="nav-tab" onclick="showTab('regras',this)">&#128203; Regras</button>
 </div>
@@ -345,6 +346,40 @@ footer strong{color:#fff;}
   </div>
 </div>
 
+<!-- 2ª FASE -->
+<div id="fase2" class="section">
+  <div class="prazo-banner">⏰ <div><strong>2ª Fase:</strong> palpites encerram 30 minutos antes de cada jogo!</div></div>
+
+  <!-- BÔNUS -->
+  <div class="card bonus-card" style="margin-bottom:1rem;">
+    <div class="card-title bonus-title">⭐ Bônus — Podium da Copa</div>
+    <p style="font-size:12px;color:#777;margin-bottom:1rem;">Preencha antes do início da 2ª fase (<strong>28/06 às 16h</strong>). Campos fecham automaticamente.</p>
+    <div class="form-group">
+      <label>🥇 Campeão <span style="color:var(--gold2);font-size:10px;">+10 pts</span></label>
+      <input type="text" id="input-campeao" placeholder="Ex: Brasil">
+    </div>
+    <div class="form-group">
+      <label>🥈 Vice-Campeão <span style="color:#9E9E9E;font-size:10px;">+5 pts</span></label>
+      <input type="text" id="input-vice" placeholder="Ex: Argentina">
+    </div>
+    <div class="form-group" style="margin:0">
+      <label>🥉 Terceiro Lugar <span style="color:#CD7F32;font-size:10px;">+3 pts</span></label>
+      <input type="text" id="input-terceiro" placeholder="Ex: França">
+    </div>
+  </div>
+
+  <div id="fase2-container"></div>
+
+  <button class="btn btn-primary" onclick="salvarFase2()" style="margin-top:1rem;">✅ Salvar palpites da 2ª fase</button>
+
+  <div class="success-screen" id="success-screen-f2">
+    <div class="success-icon">✅</div>
+    <h2>Palpites salvos!</h2>
+    <p>Boa sorte, <strong id="success-nome-f2" style="color:var(--teal)"></strong>! 🏆</p>
+  </div>
+</div>
+
+  
 <!-- RANKING -->
 <div id="ranking" class="section">
   <div class="card">
@@ -355,39 +390,68 @@ footer strong{color:#fff;}
 </div>
 
 <!-- REGRAS -->
+<!-- REGRAS -->
 <div id="regras" class="section">
   <div class="copa-banner">
-    <h2>&#9917; Fase de Grupos</h2>
-    <p>48 jogos · 8 grupos · EUA, México e Canadá</p>
-    <div class="copa-flags">&#127482;&#127480; &#127474;&#127485; &#127464;&#127462;</div>
+    <h2>⚽ Fase de Grupos</h2>
+    <p>48 jogos · 12 grupos · EUA, México e Canadá</p>
+    <div class="copa-flags">🇺🇸 🇲🇽 🇨🇦</div>
   </div>
   <div class="card">
-    <div class="card-title">📊 Pontuação</div>
+    <div class="card-title">📊 Pontuação — Fase de Grupos</div>
     <div class="regra-item"><div class="regra-badge rb-gold">5</div><div class="regra-text"><strong>Placar exato</strong><span>Acertou o placar certinho. Ex: previu 2×1 e foi 2×1.</span></div></div>
     <div class="regra-item"><div class="regra-badge rb-teal">3</div><div class="regra-text"><strong>Vencedor + diferença de gols</strong><span>Acertou o vencedor e a diferença. Ex: previu 3×1 e foi 4×2.</span></div></div>
     <div class="regra-item"><div class="regra-badge rb-mid">1</div><div class="regra-text"><strong>Só o vencedor ou empate</strong><span>Acertou quem ganhou ou que seria empate.</span></div></div>
     <div class="regra-item"><div class="regra-badge rb-gray">0</div><div class="regra-text"><strong>Resultado errado</strong><span>Errou o vencedor do jogo.</span></div></div>
   </div>
-  <div class="card bonus-card">
-    <div class="card-title bonus-title">&#11088; Bônus Artilheiro</div>
-    <div class="regra-item" style="border:none;padding-top:0;"><div class="regra-badge rb-gold">+10</div><div class="regra-text"><strong>Artilheiro correto da Copa</strong><span>Acertou o jogador com mais gols na fase de grupos.</span></div></div>
+
+  <div class="copa-banner" style="margin-top:1rem;">
+    <h2>🏆 2ª Fase em diante</h2>
+    <p>16avos · Oitavas · Quartas · Semi · Final · A partir de 28/06</p>
   </div>
+  <div class="card">
+    <div class="card-title">📊 Pontuação — 2ª Fase</div>
+    <div class="regra-item"><div class="regra-badge rb-gold">5</div><div class="regra-text"><strong>Placar exato</strong><span>Acertou o placar no tempo normal/prorrogação.</span></div></div>
+    <div class="regra-item"><div class="regra-badge rb-teal">3</div><div class="regra-text"><strong>Vencedor + diferença de gols</strong><span>Acertou quem passou e a diferença de gols.</span></div></div>
+    <div class="regra-item"><div class="regra-badge rb-mid">1</div><div class="regra-text"><strong>Acertou quem avança</strong><span>Acertou o time que passou, independente do placar. Em caso de pênaltis, vale quem passou.</span></div></div>
+    <div class="regra-item"><div class="regra-badge rb-gray">0</div><div class="regra-text"><strong>Errou quem passa</strong><span>Apostou no time errado.</span></div></div>
+  </div>
+
+  <div class="card bonus-card">
+    <div class="card-title bonus-title">⭐ Bônus</div>
+    <div class="regra-item"><div class="regra-badge rb-gold">+10</div><div class="regra-text"><strong>Artilheiro correto</strong><span>Acertou o jogador com mais gols na fase de grupos.</span></div></div>
+    <div class="regra-item"><div class="regra-badge rb-gold">+10</div><div class="regra-text"><strong>Campeão correto</strong><span>Acertou o campeão da Copa 2026.</span></div></div>
+    <div class="regra-item"><div class="regra-badge rb-teal">+5</div><div class="regra-text"><strong>Vice-campeão correto</strong><span>Acertou o vice-campeão da Copa 2026.</span></div></div>
+    <div class="regra-item"><div class="regra-badge rb-mid">+3</div><div class="regra-text"><strong>Terceiro lugar correto</strong><span>Acertou o terceiro colocado da Copa 2026.</span></div></div>
+  </div>
+
   <div class="card">
     <div class="card-title">⚡ Regras Gerais</div>
     <ul style="list-style:none;font-size:13px;line-height:2.3;color:#444;">
-      <li>&#9200; Palpites encerram <strong>30 min antes</strong> de cada jogo</li>
-      <li>&#9999; Você pode <strong>editar seus palpites</strong> a qualquer momento antes do prazo</li>
-      <li>&#128290; Empate desfeito por <strong>mais placares exatos</strong></li>
-      <li>&#128260; Resultados atualizados <strong>automaticamente via API</strong></li>
-      <li>&#127941; <strong>1 premiação</strong> ao final da fase de grupos</li>
-      <li>&#11088; O palpite do <strong>artilheiro</strong> fechou antes do 1º jogo da Copa, mas foi <strong>reaberto excepcionalmente no dia 15/06/2026</strong> para quem ainda não preencheu</li>
+      <li>⏰ Palpites encerram <strong>30 min antes</strong> de cada jogo</li>
+      <li>✏️ Você pode <strong>editar seus palpites</strong> a qualquer momento antes do prazo</li>
+      <li>🔢 Empate desfeito por <strong>mais placares exatos</strong></li>
+      <li>🔄 Resultados atualizados <strong>automaticamente via API</strong></li>
+      <li>⭐ Bônus de <strong>Campeão/Vice/Terceiro</strong> fecham em 28/06 às 16h</li>
+      <li>⭐ Bônus do <strong>Artilheiro</strong> fechou antes do 1º jogo da Copa</li>
     </ul>
   </div>
+
   <div class="card">
-    <div class="card-title">&#129351; Premiação</div>
-    <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#fffbea;border:1.5px solid rgba(255,160,0,0.4);border-radius:12px;">
-      <span style="font-size:28px;">&#129351;</span>
-      <div><strong style="font-size:14px;color:var(--gold2);">1º Lugar</strong><br><span style="font-size:12px;color:#999;">Prêmio a definir pela empresa</span></div>
+    <div class="card-title">🏅 Premiação</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#fffbea;border:1.5px solid rgba(255,160,0,0.4);border-radius:12px;">
+        <span style="font-size:28px;">🥇</span>
+        <div><strong style="font-size:14px;color:var(--gold2);">1º Lugar</strong><br><span style="font-size:12px;color:#555;">Gift Card R$ 400,00</span></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f5f5f5;border:1.5px solid #ccc;border-radius:12px;">
+        <span style="font-size:28px;">🥈</span>
+        <div><strong style="font-size:14px;color:#757575;">2º Lugar</strong><br><span style="font-size:12px;color:#555;">Gift Card R$ 200,00</span></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#fdf3e3;border:1.5px solid rgba(205,127,50,0.4);border-radius:12px;">
+        <span style="font-size:28px;">🥉</span>
+        <div><strong style="font-size:14px;color:#CD7F32;">3º Lugar</strong><br><span style="font-size:12px;color:#555;">Gift Card R$ 100,00</span></div>
+      </div>
     </div>
   </div>
 </div>
@@ -425,6 +489,23 @@ footer strong{color:#fff;}
         <input type="text" id="admin-artilheiro" placeholder="Ex: Vinicius Jr.">
       </div>
       <button class="btn btn-primary btn-sm" onclick="salvarArtilheiro()" style="width:auto;padding:9px 20px;">&#128190; Salvar artilheiro</button>
+            <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid #eee;">
+        <div class="card-title" style="font-size:15px;">&#127942; P&#243;dio Real da Copa</div>
+        <p style="font-size:12px;color:#777;margin-bottom:1rem;">Preencha ap&#243;s a final para calcular os b&#244;nus.</p>
+        <div class="form-group">
+          <label>&#129351; Campe&#227;o</label>
+          <input type="text" id="admin-campeao" placeholder="Ex: Brasil">
+        </div>
+        <div class="form-group">
+          <label>&#129352; Vice-campe&#227;o</label>
+          <input type="text" id="admin-vice" placeholder="Ex: Argentina">
+        </div>
+        <div class="form-group" style="margin:0">
+          <label>&#129353; Terceiro lugar</label>
+          <input type="text" id="admin-terceiro" placeholder="Ex: Fran&#231;a">
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="salvarPodio()" style="width:auto;padding:9px 20px;margin-top:1rem;">&#128190; Salvar p&#243;dio</button>
+      </div>
     </div>
 
     <div class="card" style="margin-bottom:1rem;background:#e3f2fd;border-color:#90caf9;">
@@ -666,6 +747,7 @@ window.showTab = function(id,btn){
   if(btn)btn.classList.add("active");
   else document.querySelectorAll(".nav-tab").forEach(t=>{if(t.getAttribute("onclick")&&t.getAttribute("onclick").includes("'"+id+"'"))t.classList.add("active");});
   if(id==="ranking")carregarRanking();
+  if(id==="fase2"&&usuarioAtual)carregarFase2();
   if(id==="admin"&&adminLogado)carregarAdminJogos();
 };
 window.switchAuth = function(mode){
@@ -927,29 +1009,57 @@ async function carregarRanking(){
   const list=document.getElementById("ranking-list");
   list.innerHTML='<div class="loading"><span class="spinner"></span>Calculando...</div>';
   try{
-    const [pS,rS,cS]=await Promise.all([
+    const [pS,rS,cS,pF2,rF2,podioSnap]=await Promise.all([
       getDocs(collection(db,"palpites")),
       getDocs(collection(db,"resultados")),
-      getDoc(doc(db,"config","artilheiro"))
+      getDoc(doc(db,"config","artilheiro")),
+      getDocs(collection(db,"palpites_f2")),
+      getDocs(collection(db,"resultados_f2")),
+      getDoc(doc(db,"config","podio"))
     ]);
+
     const res={};rS.forEach(d=>{res[d.id]=d.data();});
+    const resF2={};rF2.forEach(d=>{resF2[d.id]=d.data();});
     const artReal=(cS.exists()?cS.data().nome:"").toLowerCase().trim();
+    const podio=podioSnap.exists()?podioSnap.data():{};
+
+    // Mapeia palpites_f2 por usuário
+    const palpF2={};
+    pF2.forEach(d=>{palpF2[d.id]=d.data();});
+
     const rank=[];
     pS.forEach(d=>{
       const p=d.data();let pts=0,ex=0;
+
+      // Fase de grupos
       JOGOS.forEach(j=>{
         const r=res["j"+j.id];if(!r||r.ga===""||r.gb==="")return;
         const pt=calcPontos(p["j"+j.id+"a"],p["j"+j.id+"b"],r.ga,r.gb);
         pts+=pt;if(pt===5)ex++;
       });
       if(artReal&&p.artilheiro&&p.artilheiro.toLowerCase().trim()===artReal)pts+=10;
+
+      // 2ª fase
+      const pf2=palpF2[d.id]||{};
+      JOGOS_F2.forEach(j=>{
+        const r=resF2["j"+j.id];if(!r||r.ga===""||r.gb==="")return;
+        const pt=calcPontosF2(pf2["j"+j.id+"a"],pf2["j"+j.id+"b"],r.ga,r.gb,r.vencedor);
+        pts+=pt;if(pt===5)ex++;
+      });
+
+      // Bônus pódio
+      if(podio.campeao && pf2.campeao && pf2.campeao.toLowerCase().trim()===podio.campeao.toLowerCase().trim()) pts+=10;
+      if(podio.vice    && pf2.vice    && pf2.vice.toLowerCase().trim()   ===podio.vice.toLowerCase().trim())    pts+=5;
+      if(podio.terceiro&& pf2.terceiro&& pf2.terceiro.toLowerCase().trim()===podio.terceiro.toLowerCase().trim()) pts+=3;
+
       rank.push({nome:p.nome||d.id,pts,ex});
     });
+
     rank.sort((a,b)=>b.pts-a.pts||b.ex-a.ex);
     if(!rank.length){list.innerHTML='<p style="text-align:center;color:#aaa;font-size:13px;padding:1rem;">Nenhum palpite registrado ainda.</p>';return;}
     const max=rank[0].pts||1;
     list.innerHTML=rank.map((p,i)=>{
-      const pos=i+1,m=pos===1?"&#129351;":pos===2?"&#129352;":pos===3?"&#129353;":"",cl=pos<=3?"rank-"+pos:"";
+      const pos=i+1,m=pos===1?"🥇":pos===2?"🥈":pos===3?"🥉":"",cl=pos<=3?"rank-"+pos:"";
       return'<div class="rank-row"><div class="rank-pos '+cl+'">'+(m||pos)+'</div>'
         +'<div class="rank-info"><div class="rank-nome">'+p.nome+'</div>'
         +'<div class="rank-sub">'+p.ex+' placar(es) exato(s)</div>'
@@ -958,7 +1068,7 @@ async function carregarRanking(){
     }).join("");
   }catch(e){list.innerHTML='<p style="text-align:center;color:#e53935;font-size:12px;">Erro ao carregar.</p>';}
 }
-
+  
 // ── admin ──
 window.loginAdmin=function(){
   const u=document.getElementById("adm-user").value.trim();
@@ -968,7 +1078,9 @@ window.loginAdmin=function(){
     document.getElementById("admin-login-form").style.display="none";
     document.getElementById("admin-painel").style.display="block";
     carregarAdminJogos();
+    carregarAdminF2();
     carregarArtilheiroAdmin();
+    carregarPodioAdmin();
     carregarSelectAuditoria();
     // auto-update a cada 5 min
     autoUpdateInterval=setInterval(()=>buscarResultadosAPI(false),300000);
@@ -987,6 +1099,23 @@ async function carregarArtilheiroAdmin(){
   const s=await getDoc(doc(db,"config","artilheiro"));
   if(s.exists())document.getElementById("admin-artilheiro").value=s.data().nome||"";
 }
+window.salvarPodio = async function() {
+  const campeao  = document.getElementById("admin-campeao").value.trim();
+  const vice     = document.getElementById("admin-vice").value.trim();
+  const terceiro = document.getElementById("admin-terceiro").value.trim();
+  await setDoc(doc(db, "config", "podio"), { campeao, vice, terceiro });
+  toast("&#9989; P&#243;dio salvo!");
+};
+
+async function carregarPodioAdmin() {
+  const s = await getDoc(doc(db, "config", "podio"));
+  if (!s.exists()) return;
+  const d = s.data();
+  if (d.campeao)  document.getElementById("admin-campeao").value  = d.campeao;
+  if (d.vice)     document.getElementById("admin-vice").value     = d.vice;
+  if (d.terceiro) document.getElementById("admin-terceiro").value = d.terceiro;
+}
+  
 window.salvarArtilheiro=async function(){
   const n=document.getElementById("admin-artilheiro").value.trim();
   await setDoc(doc(db,"config","artilheiro"),{nome:n});
@@ -1126,6 +1255,15 @@ window.baixarBackup = async function(){
   }
 };
 
+<!-- RESULTADOS 2ª FASE -->
+<div class="card" style="margin-top:1rem;border-color:#7c4dff;">
+  <div class="card-title" style="color:#7c4dff;">🏆 Resultados — 2ª Fase</div>
+  <p style="font-size:12px;color:#777;margin-bottom:1rem;">
+    Edite os nomes dos times e lance os resultados. Para jogos de pênaltis, marque quem passou.
+  </p>
+  <div id="admin-f2-container"><div class="loading"><span class="spinner"></span>Carregando...</div></div>
+</div>
+  
 // ── AUDITORIA ──
 async function carregarSelectAuditoria() {
   try {
@@ -1286,7 +1424,346 @@ window.baixarAuditoriaJSON = async function(uid) {
   URL.revokeObjectURL(url);
   toast("✅ JSON baixado!");
 };  
- 
+
+// ── JOGOS DA 2ª FASE ──
+const JOGOS_F2 = [
+  // 16 avos de final
+  {id:101,fase:"16avos",num:1, d:"29/06",a:"Alemanha",        b:"3º ABCDF",  kick:"2026-06-29T20:30"},
+  {id:102,fase:"16avos",num:2, d:"30/06",a:"1º I",            b:"3º CDFGH",  kick:"2026-06-30T21:00"},
+  {id:103,fase:"16avos",num:3, d:"28/06",a:"2º A",            b:"2º B",      kick:"2026-06-28T19:00"},
+  {id:104,fase:"16avos",num:4, d:"29/06",a:"1º F",            b:"2º C",      kick:"2026-06-30T01:00"},
+  {id:105,fase:"16avos",num:5, d:"02/07",a:"2º K",            b:"2º L",      kick:"2026-07-02T23:00"},
+  {id:106,fase:"16avos",num:6, d:"02/07",a:"1º H",            b:"2º J",      kick:"2026-07-02T19:00"},
+  {id:107,fase:"16avos",num:7, d:"01/07",a:"Estados Unidos",  b:"3º BEFIJ",  kick:"2026-07-02T00:00"},
+  {id:108,fase:"16avos",num:8, d:"01/07",a:"1º G",            b:"3º AEHIJ",  kick:"2026-07-01T20:00"},
+  {id:109,fase:"16avos",num:9, d:"29/06",a:"1º C",            b:"2º F",      kick:"2026-06-29T17:00"},
+  {id:110,fase:"16avos",num:10,d:"30/06",a:"2º E",            b:"2º I",      kick:"2026-06-30T17:00"},
+  {id:111,fase:"16avos",num:11,d:"30/06",a:"México",          b:"3º CEFHI",  kick:"2026-07-01T01:00"},
+  {id:112,fase:"16avos",num:12,d:"01/07",a:"1º L",            b:"3º EHIJK",  kick:"2026-07-01T16:00"},
+  {id:113,fase:"16avos",num:13,d:"03/07",a:"Argentina",       b:"2º H",      kick:"2026-07-03T22:00"},
+  {id:114,fase:"16avos",num:14,d:"03/07",a:"2º D",            b:"2º G",      kick:"2026-07-03T18:00"},
+  {id:115,fase:"16avos",num:15,d:"02/07",a:"1º B",            b:"3º EFGIJ",  kick:"2026-07-03T03:00"},
+  {id:116,fase:"16avos",num:16,d:"03/07",a:"1º K",            b:"3º DEIJL",  kick:"2026-07-04T01:30"},
+  // Oitavas
+  {id:117,fase:"oitavas",num:1,d:"04/07",a:"Venc. SF1",b:"Venc. SF2",  kick:"2026-07-04T21:00"},
+  {id:118,fase:"oitavas",num:2,d:"04/07",a:"Venc. SF3",b:"Venc. SF4",  kick:"2026-07-04T17:00"},
+  {id:119,fase:"oitavas",num:3,d:"06/07",a:"Venc. SF5",b:"Venc. SF6",  kick:"2026-07-06T19:00"},
+  {id:120,fase:"oitavas",num:4,d:"06/07",a:"Venc. SF7",b:"Venc. SF8",  kick:"2026-07-07T00:00"},
+  {id:121,fase:"oitavas",num:5,d:"05/07",a:"Venc. SF9",b:"Venc. SF10", kick:"2026-07-05T20:00"},
+  {id:122,fase:"oitavas",num:6,d:"05/07",a:"Venc. SF11",b:"Venc. SF12",kick:"2026-07-06T00:00"},
+  {id:123,fase:"oitavas",num:7,d:"07/07",a:"Venc. SF13",b:"Venc. SF14",kick:"2026-07-07T16:00"},
+  {id:124,fase:"oitavas",num:8,d:"07/07",a:"Venc. SF15",b:"Venc. SF16",kick:"2026-07-07T20:00"},
+  // Quartas
+  {id:125,fase:"quartas",num:1,d:"09/07",a:"Venc. O1",b:"Venc. O2",kick:"2026-07-09T20:00"},
+  {id:126,fase:"quartas",num:2,d:"10/07",a:"Venc. O3",b:"Venc. O4",kick:"2026-07-10T19:00"},
+  {id:127,fase:"quartas",num:3,d:"11/07",a:"Venc. O5",b:"Venc. O6",kick:"2026-07-11T21:00"},
+  {id:128,fase:"quartas",num:4,d:"11/07",a:"Venc. O7",b:"Venc. O8",kick:"2026-07-12T01:00"},
+  // Semifinal
+  {id:129,fase:"semi",num:1,d:"14/07",a:"Venc. Q1",b:"Venc. Q2",kick:"2026-07-14T19:00"},
+  {id:130,fase:"semi",num:2,d:"15/07",a:"Venc. Q3",b:"Venc. Q4",kick:"2026-07-15T19:00"},
+  // 3º lugar
+  {id:131,fase:"terceiro",num:1,d:"18/07",a:"Perd. S1",b:"Perd. S2",kick:"2026-07-18T21:00"},
+  // Final
+  {id:132,fase:"final",num:1,d:"19/07",a:"Venc. S1",b:"Venc. S2",kick:"2026-07-19T19:00"}
+];
+
+const FASE2_BONUS_DEADLINE = Date.UTC(2026, 5, 28, 19, 0, 0); // 28/06 16:00 Brasilia = 19:00 UTC
+
+function bonusF2Expirado() {
+  return agora().getTime() >= FASE2_BONUS_DEADLINE;
+}
+
+function jogoF2Expirado(jogo) {
+  const kick = kickUTC(jogo);
+  if (!kick) return false;
+  const limite = kick - 30 * 60 * 1000;
+  return agora().getTime() >= limite;
+}
+
+function faseLabel(fase) {
+  const map = {
+    "16avos": "16 Avos de Final",
+    "oitavas": "Oitavas de Final",
+    "quartas": "Quartas de Final",
+    "semi": "Semifinal",
+    "terceiro": "Disputa do 3º Lugar",
+    "final": "Final"
+  };
+  return map[fase] || fase;
+}
+
+async function carregarFase2() {
+  const c = document.getElementById("fase2-container");
+  if (!usuarioAtual) return;
+
+  c.innerHTML = '<div class="loading"><span class="spinner"></span>Carregando...</div>';
+
+  const id = uid(usuarioAtual.usuario);
+  const [pSnap, rSnap] = await Promise.all([
+    getDoc(doc(db, "palpites_f2", id)),
+    getDocs(collection(db, "resultados_f2"))
+  ]);
+
+  const dados = pSnap.exists() ? pSnap.data() : {};
+  const resultados = {};
+  rSnap.forEach(d => { resultados[d.id] = d.data(); });
+
+  dadosAntigosF2 = dados;
+
+  // Bônus
+  const bExp = bonusF2Expirado();
+  const inpC = document.getElementById("input-campeao");
+  const inpV = document.getElementById("input-vice");
+  const inpT = document.getElementById("input-terceiro");
+
+  if (dados.campeao) inpC.value = dados.campeao;
+  if (dados.vice)    inpV.value = dados.vice;
+  if (dados.terceiro) inpT.value = dados.terceiro;
+
+  if (bExp) {
+    [inpC, inpV, inpT].forEach(inp => {
+      inp.disabled = true;
+      inp.style.background = "#f0f0f0";
+      inp.style.color = "#aaa";
+      inp.style.cursor = "not-allowed";
+    });
+  }
+
+  // Jogos por fase
+  const fases = ["16avos","oitavas","quartas","semi","terceiro","final"];
+  c.innerHTML = "";
+
+  fases.forEach((fase, fi) => {
+    const jogos = JOGOS_F2.filter(j => j.fase === fase);
+    const bloco = document.createElement("div");
+    bloco.className = "grupo-bloco";
+    bloco.innerHTML = '<div class="grupo-header" onclick="toggleG(\'f2'+fase+'\')">'
+      + '<span>🏆 ' + faseLabel(fase) + '</span><span>▾</span></div>'
+      + '<div class="grupo-jogos ' + (fi === 0 ? "open" : "") + '" id="f2' + fase + '">'
+      + jogos.map(j => {
+        const va = dados["j"+j.id+"a"] !== undefined ? dados["j"+j.id+"a"] : "";
+        const vb = dados["j"+j.id+"b"] !== undefined ? dados["j"+j.id+"b"] : "";
+        const exp = jogoF2Expirado(j);
+        const r = resultados["j"+j.id];
+        const temResultado = r && r.ga !== "" && r.gb !== "" && r.ga !== undefined;
+
+        let resultadoHtml = "";
+        if (temResultado) {
+          let resPts = "";
+          if (va !== "" && vb !== "") {
+            const pts = calcPontosF2(va, vb, r.ga, r.gb, r.vencedor);
+            let cor = "#999", txt = "0 pts";
+            if (pts === 5) { cor = "#2e7d32"; txt = "Placar exato · +5 pts"; }
+            else if (pts === 3) { cor = "#0EB8A8"; txt = "+3 pts"; }
+            else if (pts === 1) { cor = "#FFA000"; txt = "+1 pt (avançou)"; }
+            resPts = '<span class="res-pts" style="color:'+cor+'">'+txt+'</span>';
+          }
+          const vencLabel = r.vencedor ? ' · Passou: <strong>'+r.vencedor+'</strong>' : '';
+          resultadoHtml = '<div class="resultado-real">'
+            + '<span class="res-label">⚽ Resultado</span>'
+            + '<span class="res-placar">' + j.a + ' <strong>' + r.ga + '</strong>×<strong>' + r.gb + '</strong> ' + j.b + vencLabel + '</span>'
+            + resPts + '</div>';
+        }
+
+        return '<div class="jogo-card' + (exp ? ' jogo-encerrado' : '') + '">'
+          + '<div class="jogo-meta">'
+          + '<span class="jogo-grp" style="background:linear-gradient(135deg,#7c4dff,#512da8)">' + faseLabel(fase) + ' ' + j.num + '</span>'
+          + '<span class="jogo-data">📅 ' + j.d + '/2026</span>'
+          + '</div>'
+          + '<div class="placar-row">'
+          + '<span class="time-a' + (exp ? '" style="color:#bbb' : '') + '">' + j.a + '</span>'
+          + '<div class="placar-inputs">'
+          + '<input type="number" min="0" max="20" placeholder="–" id="pa-f2-'+j.id+'" value="'+va+'"' + (exp ? ' disabled' : '') + '>'
+          + '<span class="vs-txt">×</span>'
+          + '<input type="number" min="0" max="20" placeholder="–" id="pb-f2-'+j.id+'" value="'+vb+'"' + (exp ? ' disabled' : '') + '>'
+          + '</div>'
+          + '<span class="time-b' + (exp ? '" style="color:#bbb' : '') + '">' + j.b + '</span>'
+          + '</div>'
+          + resultadoHtml
+          + '</div>';
+      }).join("") + '</div>';
+    c.appendChild(bloco);
+  });
+}
+
+function calcPontosF2(pa, pb, ra, rb, vencedor) {
+  if (pa === "" || pb === "" || ra === "" || rb === "") return 0;
+  pa = +pa; pb = +pb; ra = +ra; rb = +rb;
+
+  // Placar exato (tempo normal)
+  if (pa === ra && pb === rb) return 5;
+
+  // Determina vencedor do palpite
+  const vP = pa > pb ? "A" : pa < pb ? "B" : "E";
+
+  // Vencedor real — se foi para pênaltis, usa o campo "vencedor" do admin
+  let vR;
+  if (vencedor) {
+    vR = vencedor; // "A" ou "B" (time da esquerda ou direita)
+  } else {
+    vR = ra > rb ? "A" : ra < rb ? "B" : "E";
+  }
+
+  if (vP !== vR) return 0;
+
+  // Acertou quem passa — verifica diferença
+  if ((pa - pb) === (ra - rb)) return 3;
+  return 1;
+}
+
+let dadosAntigosF2 = null;
+
+window.salvarFase2 = async function() {
+  if (!usuarioAtual) return;
+
+  if (!dadosAntigosF2) {
+    const snap = await getDoc(doc(db, "palpites_f2", uid(usuarioAtual.usuario)));
+    dadosAntigosF2 = snap.exists() ? snap.data() : {};
+  }
+
+  let m = 0;
+  JOGOS_F2.forEach(j => {
+    if (jogoF2Expirado(j)) return;
+    const a = document.getElementById("pa-f2-"+j.id);
+    const b = document.getElementById("pb-f2-"+j.id);
+    if (!a || a.value === "" || !b || b.value === "") m++;
+  });
+  if (m > 0 && !confirm("Você deixou " + m + " jogo(s) sem palpite. Salvar assim mesmo?")) return;
+
+  const id = uid(usuarioAtual.usuario);
+  const dados = {
+    nome: usuarioAtual.nome,
+    usuario: id,
+    campeao:  bonusF2Expirado() ? (dadosAntigosF2?.campeao  ?? "") : (document.getElementById("input-campeao").value.trim()),
+    vice:     bonusF2Expirado() ? (dadosAntigosF2?.vice     ?? "") : (document.getElementById("input-vice").value.trim()),
+    terceiro: bonusF2Expirado() ? (dadosAntigosF2?.terceiro ?? "") : (document.getElementById("input-terceiro").value.trim()),
+    updatedAt: serverTimestamp()
+  };
+
+  JOGOS_F2.forEach(j => {
+    if (jogoF2Expirado(j)) {
+      dados["j"+j.id+"a"] = dadosAntigosF2?.["j"+j.id+"a"] ?? "";
+      dados["j"+j.id+"b"] = dadosAntigosF2?.["j"+j.id+"b"] ?? "";
+    } else {
+      dados["j"+j.id+"a"] = document.getElementById("pa-f2-"+j.id)?.value ?? "";
+      dados["j"+j.id+"b"] = document.getElementById("pb-f2-"+j.id)?.value ?? "";
+    }
+  });
+
+  await setDoc(doc(db, "palpites_f2", id), dados);
+  document.getElementById("success-screen-f2").style.display = "block";
+  document.getElementById("success-nome-f2").textContent = usuarioAtual.nome.split(" ")[0];
+  toast("Palpites da 2ª fase salvos! ✔");
+};
+
+// ── ADMIN 2ª FASE ──
+async function carregarAdminF2() {
+  const c = document.getElementById("admin-f2-container");
+  if (!c) return;
+  c.innerHTML = '<div class="loading"><span class="spinner"></span>Carregando...</div>';
+
+  const [rSnap, jSnap] = await Promise.all([
+    getDocs(collection(db, "resultados_f2")),
+    getDoc(doc(db, "config", "jogos_f2"))
+  ]);
+
+  const res = {};
+  rSnap.forEach(d => { res[d.id] = d.data(); });
+
+  // Nomes customizados dos times
+  const jogosCustom = jSnap.exists() ? jSnap.data() : {};
+
+  const fases = ["16avos","oitavas","quartas","semi","terceiro","final"];
+  c.innerHTML = "";
+
+  fases.forEach((fase, fi) => {
+    const jogos = JOGOS_F2.filter(j => j.fase === fase);
+    const bloco = document.createElement("div");
+    bloco.className = "grupo-bloco";
+    bloco.innerHTML = '<div class="grupo-header" onclick="toggleG(\'admf2'+fase+'\')">'
+      + '<span>' + faseLabel(fase) + '</span><span>▾</span></div>'
+      + '<div class="grupo-jogos ' + (fi === 0 ? "open" : "") + '" id="admf2' + fase + '">'
+      + jogos.map(j => {
+        const r = res["j"+j.id] || {};
+        const ga = r.ga !== undefined ? r.ga : "";
+        const gb = r.gb !== undefined ? r.gb : "";
+        const venc = r.vencedor || "";
+        const enc = ga !== "" && gb !== "";
+
+        const nomeA = jogosCustom["j"+j.id+"a"] || j.a;
+        const nomeB = jogosCustom["j"+j.id+"b"] || j.b;
+
+        return '<div class="admin-jogo">'
+          + '<div class="admin-jogo-title">'
+          + '<span style="font-size:11px;color:#7c4dff;font-weight:800;">' + faseLabel(fase) + ' ' + j.num + '</span>'
+          + '<span class="' + (enc ? "badge-enc" : "badge-wait") + '">' + (enc ? "Encerrado" : "Aguardando") + '</span>'
+          + '</div>'
+
+          // Edição dos nomes
+          + '<div style="display:flex;gap:6px;margin-bottom:8px;">'
+          + '<input type="text" placeholder="Time A" id="na-f2-'+j.id+'" value="'+nomeA+'" style="flex:1;padding:7px 10px;border:1.5px solid #ddd;border-radius:8px;font-size:12px;font-family:Nunito,sans-serif;">'
+          + '<span style="align-self:center;color:#ccc;font-size:12px;">×</span>'
+          + '<input type="text" placeholder="Time B" id="nb-f2-'+j.id+'" value="'+nomeB+'" style="flex:1;padding:7px 10px;border:1.5px solid #ddd;border-radius:8px;font-size:12px;font-family:Nunito,sans-serif;">'
+          + '</div>'
+
+          // Placar
+          + '<div class="placar-row" style="margin-bottom:8px;">'
+          + '<span class="time-a" style="font-size:12px;">'+nomeA+'</span>'
+          + '<div class="placar-inputs">'
+          + '<input type="number" min="0" max="20" placeholder="–" id="ra-f2-'+j.id+'" value="'+ga+'">'
+          + '<span class="vs-txt">×</span>'
+          + '<input type="number" min="0" max="20" placeholder="–" id="rb-f2-'+j.id+'" value="'+gb+'">'
+          + '</div>'
+          + '<span class="time-b" style="font-size:12px;">'+nomeB+'</span>'
+          + '</div>'
+
+          // Pênaltis
+          + '<div style="margin-bottom:8px;">'
+          + '<label style="font-size:10px;font-weight:800;letter-spacing:1px;color:#7c4dff;">PÊNALTIS — quem passou? (deixe em branco se não houve)</label>'
+          + '<select id="rv-f2-'+j.id+'" style="width:100%;padding:8px 10px;border:1.5px solid #ddd;border-radius:8px;font-family:Nunito,sans-serif;font-size:12px;margin-top:4px;">'
+          + '<option value="">Sem pênaltis / decidido no tempo normal</option>'
+          + '<option value="A"' + (venc==="A"?" selected":"") + '>'+nomeA+' (passou nos pênaltis)</option>'
+          + '<option value="B"' + (venc==="B"?" selected":"") + '>'+nomeB+' (passou nos pênaltis)</option>'
+          + '</select>'
+          + '</div>'
+
+          + '<button class="btn btn-primary btn-sm" onclick="salvarResultadoF2('+j.id+')" style="width:100%;">💾 Salvar</button>'
+          + '</div>';
+      }).join("") + '</div>';
+    c.appendChild(bloco);
+  });
+}
+
+window.salvarResultadoF2 = async function(jid) {
+  const ga = document.getElementById("ra-f2-"+jid)?.value ?? "";
+  const gb = document.getElementById("rb-f2-"+jid)?.value ?? "";
+  const venc = document.getElementById("rv-f2-"+jid)?.value ?? "";
+  const nomeA = document.getElementById("na-f2-"+jid)?.value.trim() ?? "";
+  const nomeB = document.getElementById("nb-f2-"+jid)?.value.trim() ?? "";
+
+  if (ga === "" || gb === "") { toast("⚠️ Preencha os dois placares."); return; }
+
+  // Salva resultado
+  await setDoc(doc(db, "resultados_f2", "j"+jid), {
+    ga, gb,
+    vencedor: venc,
+    fonte: "manual",
+    updatedAt: serverTimestamp()
+  });
+
+  // Salva nomes customizados
+  const jSnap = await getDoc(doc(db, "config", "jogos_f2"));
+  const atual = jSnap.exists() ? jSnap.data() : {};
+  await setDoc(doc(db, "config", "jogos_f2"), {
+    ...atual,
+    ["j"+jid+"a"]: nomeA,
+    ["j"+jid+"b"]: nomeB
+  });
+
+  toast("✅ Jogo " + jid + " salvo!");
+  carregarAdminF2();
+};  
+  
 </script>
 </body>
 </html>
