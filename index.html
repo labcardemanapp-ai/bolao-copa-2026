@@ -1182,11 +1182,14 @@ window.salvarResultadoF2=async function(jid){
   const venc=document.getElementById("rv-f2-"+jid)?.value??"";
   const nA=document.getElementById("na-f2-"+jid)?.value.trim()??"";
   const nB=document.getElementById("nb-f2-"+jid)?.value.trim()??"";
-  if(ga===""||gb===""){toast("&#9888; Preencha os dois placares.");return;}
-  await setDoc(doc(db,"resultados_f2","j"+jid),{ga,gb,vencedor:venc,fonte:"manual",updatedAt:serverTimestamp()});
+  // Salva nomes mesmo sem placar
   const jSnap=await getDoc(doc(db,"config","jogos_f2"));
   const atual=jSnap.exists()?jSnap.data():{};
   await setDoc(doc(db,"config","jogos_f2"),{...atual,["j"+jid+"a"]:nA,["j"+jid+"b"]:nB});
+  // Só salva resultado se placar estiver preenchido
+  if(ga!==""&&gb!==""){
+    await setDoc(doc(db,"resultados_f2","j"+jid),{ga,gb,vencedor:venc,fonte:"manual",updatedAt:serverTimestamp()});
+  }
   toast("&#9989; Jogo "+jid+" salvo!");carregarAdminF2();
 };
 
